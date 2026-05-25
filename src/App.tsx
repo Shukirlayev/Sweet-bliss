@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./store/CartContext";
 import { Navbar } from "./components/Navbar";
@@ -14,6 +14,15 @@ function AppLayout() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isCustomOrderOpen, setIsCustomOrderOpen] = useState(false);
+
+  useEffect(() => {
+    // Initialize Telegram Web App if available
+    if (window.Telegram?.WebApp) {
+      const tg = window.Telegram.WebApp;
+      tg.ready();
+      tg.expand();
+    }
+  }, []);
 
   return (
     <div className="relative flex flex-col min-h-screen">

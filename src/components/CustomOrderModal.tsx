@@ -20,6 +20,18 @@ export function CustomOrderModal({ isOpen, onClose }: CustomOrderModalProps) {
   });
   const [image, setImage] = useState<string | null>(null);
 
+  React.useEffect(() => {
+    if (isOpen && window.Telegram?.WebApp) {
+      const user = window.Telegram.WebApp.initDataUnsafe?.user;
+      if (user) {
+        setFormData(prev => ({
+          ...prev,
+          name: prev.name || `${user.first_name || ''} ${user.last_name || ''}`.trim()
+        }));
+      }
+    }
+  }, [isOpen]);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {

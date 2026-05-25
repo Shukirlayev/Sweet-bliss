@@ -25,3 +25,11 @@ export interface Order {
   status: "pending" | "completed" | "cancelled";
   createdAt: string;
 }
+
+declare global {
+  interface Window {
+    Telegram?: {
+      WebApp: any;
+    };
+  }
+}

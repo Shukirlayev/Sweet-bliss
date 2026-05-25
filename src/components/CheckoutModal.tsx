@@ -23,6 +23,19 @@ export function CheckoutModal({ isOpen, onClose }: CheckoutModalProps) {
     address: ""
   });
 
+  React.useEffect(() => {
+    if (isOpen && window.Telegram?.WebApp) {
+      const user = window.Telegram.WebApp.initDataUnsafe?.user;
+      if (user) {
+        setFormData(prev => ({
+          ...prev,
+          customerName: prev.customerName || `${user.first_name || ''} ${user.last_name || ''}`.trim(),
+          telegramUsername: prev.telegramUsername || (user.username ? `@${user.username}` : '')
+        }));
+      }
+    }
+  }, [isOpen]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.formEvent || e.preventDefault();
     setLoading(true);
