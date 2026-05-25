@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CartProvider } from "./store/CartContext";
+import { FavoritesProvider } from "./store/FavoritesContext";
 import { Navbar } from "./components/Navbar";
 import { Home } from "./pages/Home";
 import { AdminPage } from "./pages/AdminPage";
 import { CartDrawer } from "./components/CartDrawer";
+import { FavoritesDrawer } from "./components/FavoritesDrawer";
 import { CheckoutModal } from "./components/CheckoutModal";
 import { ProductModal } from "./components/ProductModal";
 import { CustomOrderModal } from "./components/CustomOrderModal";
@@ -36,6 +38,7 @@ function AppLayout() {
       </main>
 
       <CartDrawer onCheckout={() => setIsCheckoutOpen(true)} />
+      <FavoritesDrawer />
       
       <ProductModal 
         product={selectedProduct} 
@@ -58,9 +61,11 @@ function AppLayout() {
 export default function App() {
   return (
     <BrowserRouter>
-      <CartProvider>
-        <AppLayout />
-      </CartProvider>
+      <FavoritesProvider>
+        <CartProvider>
+          <AppLayout />
+        </CartProvider>
+      </FavoritesProvider>
     </BrowserRouter>
   );
 }

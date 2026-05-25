@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
-import { ShoppingBag, Cake } from "lucide-react";
+import { ShoppingBag, Cake, Heart } from "lucide-react";
 import { useCart } from "../store/CartContext";
+import { useFavorites } from "../store/FavoritesContext";
 import { motion } from "motion/react";
 
 export function Navbar() {
   const { cartCount, setIsCartOpen } = useCart();
+  const { favoritesCount, setIsFavoritesOpen } = useFavorites();
 
   return (
     <nav className="sticky top-0 z-40 w-full px-4 py-4 md:px-8">
@@ -27,6 +29,17 @@ export function Navbar() {
           <Link to="/admin" className="text-sm font-medium text-slate-600 hover:text-slate-900 hidden sm:block">
             Admin
           </Link>
+          <button
+            onClick={() => setIsFavoritesOpen(true)}
+            className="relative p-2 rounded-xl bg-white/50 hover:bg-white/80 transition-colors border border-white/50 text-slate-700"
+          >
+            <Heart size={24} />
+            {favoritesCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-rose-500 text-white text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full animate-in zoom-in">
+                {favoritesCount}
+              </span>
+            )}
+          </button>
           <button
             onClick={() => setIsCartOpen(true)}
             className="relative p-2 rounded-xl bg-white/50 hover:bg-white/80 transition-colors border border-white/50 text-slate-700"

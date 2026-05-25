@@ -6,6 +6,7 @@ import { formatUZS } from "../lib/utils";
 import { motion } from "motion/react";
 import { ShoppingBag, Heart, Clock, ShieldCheck, ChevronRight, Search, Star, ImagePlus } from "lucide-react";
 import { useCart } from "../store/CartContext";
+import { useFavorites } from "../store/FavoritesContext";
 
 interface HomeProps {
   onProductClick: (product: Product) => void;
@@ -18,6 +19,7 @@ export function Home({ onProductClick, onCustomOrderClick }: HomeProps) {
   const [activeCategory, setActiveCategory] = useState("Barchasi");
   const [searchQuery, setSearchQuery] = useState("");
   const { addToCart } = useCart();
+  const { toggleFavorite, isFavorite } = useFavorites();
 
   useEffect(() => {
     api.getProducts()
@@ -201,6 +203,15 @@ export function Home({ onProductClick, onCustomOrderClick }: HomeProps) {
                       Batafsil ko'rish
                     </span>
                   </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(product);
+                    }}
+                    className="absolute top-2 right-2 sm:top-4 sm:right-4 p-2 sm:p-2.5 rounded-full bg-white/70 backdrop-blur-md text-slate-400 hover:bg-white hover:text-rose-500 hover:scale-110 transition-all shadow-sm z-10"
+                  >
+                    <Heart size={18} className={`sm:w-5 sm:h-5 ${isFavorite(product.id) ? 'fill-rose-500 text-rose-500' : ''}`} />
+                  </button>
                 </div>
                 <div className="p-3 sm:p-5 flex-1 flex flex-col justify-between">
                   <div>

@@ -1,10 +1,11 @@
 import { motion, AnimatePresence } from "motion/react";
-import { X, ShoppingBag } from "lucide-react";
+import { X, ShoppingBag, Heart } from "lucide-react";
 import type { Product } from "../types";
 import { GlassPanel } from "./GlassPanel";
 import { formatUZS } from "../lib/utils";
 import { useState } from "react";
 import { useCart } from "../store/CartContext";
+import { useFavorites } from "../store/FavoritesContext";
 
 interface ProductModalProps {
   product: Product | null;
@@ -13,6 +14,7 @@ interface ProductModalProps {
 
 export function ProductModal({ product, onClose }: ProductModalProps) {
   const { addToCart } = useCart();
+  const { toggleFavorite, isFavorite } = useFavorites();
   const [activeImage, setActiveImage] = useState(0);
 
   if (!product) return null;
@@ -80,16 +82,22 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
               </div>
             </div>
 
-            <div className="pt-8 mt-4 border-t border-white/60">
+            <div className="pt-8 mt-4 border-t border-white/60 flex items-center gap-3">
               <button 
                 onClick={() => {
                   addToCart(product);
                   onClose();
                 }}
-                className="w-full py-4 rounded-xl flex items-center justify-center gap-2 bg-slate-900 text-white font-bold text-lg hover:shadow-xl hover:scale-[1.02] transition-all"
+                className="flex-1 py-4 rounded-xl flex items-center justify-center gap-2 bg-slate-900 text-white font-bold text-lg hover:shadow-xl hover:scale-[1.02] transition-all"
               >
                 <ShoppingBag size={20} />
                 Savatga qo'shish
+              </button>
+              <button
+                onClick={() => toggleFavorite(product)}
+                className={`p-4 rounded-xl flex items-center justify-center transition-all shadow-sm border ${isFavorite(product.id) ? 'bg-rose-50 border-rose-200 text-rose-500' : 'bg-white/50 border-white/60 text-slate-400 hover:text-rose-500 hover:bg-white'} hover:scale-[1.02]`}
+              >
+                <Heart size={24} className={isFavorite(product.id) ? 'fill-current' : ''} />
               </button>
             </div>
           </div>
