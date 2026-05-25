@@ -1,7 +1,9 @@
+import "dotenv/config";
 import express from "express";
 import path from "path";
-import fetch from "node-fetch"; // using global fetch if Node > 18, but wait, usually express needs node-fetch or native fetch. Native fetch is available in Node 18+. We'll just use native fetch.
 import { createServer as createViteServer } from "vite";
+import axios from "axios";
+import FormData from "form-data";
 
 const PORT = 3000;
 
@@ -101,19 +103,14 @@ async function sendTelegramMessage(text: string) {
     return false;
   }
   try {
-    const response = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ chat_id: chatId, text, parse_mode: 'HTML' })
+    await axios.post(`https://api.telegram.org/bot${token}/sendMessage`, {
+      chat_id: chatId,
+      text: text,
+      parse_mode: 'HTML'
     });
-    const data = await response.json();
-    if (!response.ok) {
-        console.error("Telegram error:", data);
-        return false;
-    }
     return true;
-  } catch (error) {
-    console.error("Telegram xatosi:", error);
+  } catch (error: any) {
+    console.error("Telegram xatosi:", error.response?.data || error.message);
     return false;
   }
 }
@@ -142,13 +139,11 @@ async function startServer() {
           const matches = imageBase64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
           if (matches && matches.length === 3) {
             const data = Buffer.from(matches[2], 'base64');
-            const blob = new Blob([data], { type: matches[1] });
-            formData.append('photo', blob, 'photo.jpg');
+            formData.append('photo', data, { filename: 'photo.jpg', contentType: matches[1] });
 
-            fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
-              method: 'POST',
-              body: formData as any
-            }).catch(console.error);
+            axios.post(`https://api.telegram.org/bot${token}/sendPhoto`, formData, {
+              headers: formData.getHeaders()
+            }).catch((err) => console.error("Telegram photo error:", err.response?.data || err.message));
           } else {
              sendTelegramMessage(caption);
           }
