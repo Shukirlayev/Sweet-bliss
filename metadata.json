@@ -1,0 +1,6 @@
+{
+  "name": "Sweet Bliss",
+  "description": "Uyda tayyorlangan maxsus tortlarga buyurtma berish uchun mo'ljallangan e-commerce web platformasi. Mahsulotlar katalogi, korzinka va Telegram bot orqali buyurtma qabul qilishni qo'llab quvvatlaydi.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
