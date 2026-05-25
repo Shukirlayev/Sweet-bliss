@@ -53,6 +53,10 @@ export function CustomOrderModal({ isOpen, onClose }: CustomOrderModalProps) {
       alert("Iltimos, tort rasmini yuklang");
       return;
     }
+    if (formData.phone.length < 17) {
+      alert("Iltimos, telefon raqamini to'liq kiriting.");
+      return;
+    }
 
     setLoading(true);
     try {
@@ -72,7 +76,24 @@ export function CustomOrderModal({ isOpen, onClose }: CustomOrderModalProps) {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    if (name === 'phone') {
+      let input = value.replace(/\D/g, '');
+      if (input.startsWith('998')) input = input.substring(3);
+      input = input.substring(0, 9);
+      let formatted = '+998';
+      if (input.length > 0) formatted += ' ' + input.substring(0, 2);
+      if (input.length > 2) formatted += ' ' + input.substring(2, 5);
+      if (input.length > 5) formatted += ' ' + input.substring(5, 7);
+      if (input.length > 7) formatted += ' ' + input.substring(7, 9);
+      
+      if (value === '' || (value.length < formData.phone.length && input.length === 0)) {
+        formatted = '';
+      }
+      setFormData(prev => ({ ...prev, phone: formatted }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   if (!isOpen) return null;
@@ -175,6 +196,7 @@ export function CustomOrderModal({ isOpen, onClose }: CustomOrderModalProps) {
                     name="phone" 
                     value={formData.phone}
                     onChange={handleChange}
+                    maxLength={17}
                     className="w-full px-4 py-3 rounded-xl bg-white/50 border border-white/60 focus:outline-none focus:ring-2 focus:ring-rose-400 focus:bg-white transition-all shadow-sm"
                     placeholder="+998 90 123 45 67"
                   />
